@@ -9,3 +9,12 @@
 // object. For example:
 //
 // Alloy.Globals.someGlobalFunction = function(){};
+
+
+if (OS_IOS) {
+	Alloy.Globals.PrintUtils = require('print_utils_ios');
+}
+
+if (OS_ANDROID) {
+	Alloy.Globals.PrintUtils = require('print_utils_android');
+}
