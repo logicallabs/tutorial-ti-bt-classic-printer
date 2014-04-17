@@ -68,3 +68,15 @@ ExternalAccessories.addEventListener('accessoryDisconnected', function(e) {
 		Ti.App.fireEvent('printerDisconnected');
 	}
 });
+
+exports.print = function(text) {
+	if (isConnected()) {
+		session.write({
+			data: Ti.createBuffer({
+				value: text
+			})
+		});
+	} else {
+		alert('Session is not open!');
+	}
+};

@@ -48,7 +48,7 @@ function toggleConnection() {
 }
 
 function print() {
-	alert('Will print here; not ready yet!');
+	PrinterUtils.print($.textInput.value);
 	$.textInput.value = '';
 }
 

@@ -72,3 +72,15 @@ exports.disconnect = function() {
 		clientSocket.close();
 	}
 };
+
+exports.print = function(text) {
+	if (isConnected()) {
+		clientSocket.write(
+			Ti.createBuffer({
+				value: text
+			})
+		);
+	} else {
+		alert('Device is not connected!');
+	}
+};
