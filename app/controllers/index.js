@@ -12,9 +12,11 @@ function refreshDeviceList() {
 	tableData = [];
 	devices = [];
 	
-	// TODO: Will need to acquire actual device list here.
-	tableData.push({
-		title: 'Fake Device For Testing GUI'
+	PrinterUtils.getDeviceList().forEach(function(entry) {
+		devices.push(entry.device);
+		tableData.push({
+			title: entry.name
+		});
 	});
 	
 	$.deviceTable.setData(tableData);
