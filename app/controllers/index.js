@@ -35,7 +35,16 @@ function tableClick(e) {
 }
 
 function toggleConnection() {
-	alert('Will connect/disconnect here; not ready yet!');
+	if (PrinterUtils.isConnected()) {
+		PrinterUtils.disconnect();
+		return;
+	}
+	
+	if (selectedDeviceIndex === -1) {
+		alert('Please select a device from the table');
+		return;
+	}
+	PrinterUtils.connect(devices[selectedDeviceIndex]);
 }
 
 function print() {
@@ -43,6 +52,24 @@ function print() {
 	$.textInput.value = '';
 }
 
+function updateGui() {
+	if (PrinterUtils.isConnected()) {
+		$.toggleConnectionButton.title = 'Disconnect';
+		$.textInput.visible = true;
+	} else {
+		$.toggleConnectionButton.title = 'Connect';
+		$.textInput.visible = false;
+	}
+}
+
+Ti.App.addEventListener('printerConnected', updateGui);
+Ti.App.addEventListener('printerDisconnected', updateGui);
+Ti.App.addEventListener('printerError', function(e) {
+	alert(e.message);
+});
+
+
 $.index.open();
 
 refreshDeviceList();
+updateGui();

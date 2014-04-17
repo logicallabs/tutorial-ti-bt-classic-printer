@@ -3,7 +3,8 @@
 
 var
 	ExternalAccessories = require('com.logicallabs.externalaccessories'),
-	PROTOCOL_STRING = 'com.zebra.rawport'
+	PROTOCOL_STRING = 'com.zebra.rawport',
+	session
 ;
 
 exports.getDeviceList = function() {
@@ -23,3 +24,47 @@ exports.getDeviceList = function() {
 	});
 	return result;	
 };
+
+exports.connect = function(accessory) {
+	if (session) {
+		Ti.API.info('Closing previous session!');
+		session.close();
+	}
+
+	session = accessory.openSession({
+		protocol: PROTOCOL_STRING
+	});
+	
+	if (session) {
+		Ti.App.fireEvent('printerConnected');
+	} else {
+		Ti.App.fireEvent('printerError', {
+			message: 'Could not create session!'
+		});
+	}
+};
+
+function isConnected() {
+	if (session) {
+		return true;
+	}
+	return false;
+}
+
+exports.isConnected = isConnected;
+
+exports.disconnect = function() {
+	if (session) {
+		session.close();
+		session = null;
+		Ti.App.fireEvent('printerDisconnected');
+	}
+};
+
+ExternalAccessories.addEventListener('accessoryDisconnected', function(e) {
+	Ti.API.info('accessoryDisconnected event received');
+	if (session && session.accessory.equals(e.accessory)) {
+		session = null;
+		Ti.App.fireEvent('printerDisconnected');
+	}
+});
